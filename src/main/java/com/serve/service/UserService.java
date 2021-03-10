@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.serve.mapper.UserMapper;
 import com.serve.pojo.common.Result;
 import com.serve.pojo.model.UserModel;
-import com.serve.pojo.req.ResidentReq;
+import com.serve.pojo.req.UserInfoReq;
 import com.serve.pojo.resp.ResidentResp;
 import com.serve.pojo.resp.UserResp;
 import com.serve.util.ContextUtil;
@@ -40,16 +40,16 @@ public class UserService {
 
     /**
      * 更新业主资料
-     * @param residentReq
+     * @param userInfoReq
      * @return
      */
-    public Result updateResidentInfo(ResidentReq residentReq){
+    public Result updateResidentInfo(UserInfoReq userInfoReq){
         int userId = ContextUtil.getUserView().getId();
         UserModel userModel = userMapper.selectById(userId);
         if (userModel == null){
             return new Result(Result.FAILURE_CODE,"当前用户不存在！");
         }
-        BeanUtils.copyProperties(residentReq,userModel);
+        BeanUtils.copyProperties(userInfoReq,userModel);
         userMapper.updateById(userModel);
         return new Result();
     }
@@ -58,7 +58,7 @@ public class UserService {
      * 查询当前业主资料
      * @return
      */
-    public ResidentResp getResidentInfo(){
+    public ResidentResp getCurrentUserInfo(){
         int userId = ContextUtil.getUserView().getId();
         UserModel userModel = userMapper.selectById(userId);
         ResidentResp resp = new ResidentResp();

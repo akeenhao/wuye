@@ -43,9 +43,6 @@ public class ServiceFamilyService {
      */
     public List<ServiceFamilyQueryResp> getList(String status, String keyword){
         UserModel currentUser = ContextUtil.getUserView();
-        return serviceFamilyMapper.getList(0,0,"", "");
-
-       /*
         //当前用户为业主
         if (Const.ROLE_RESIDENT.equals(currentUser.getRole())){
             return serviceFamilyMapper.getList(currentUser.getId(),0,status, keyword);
@@ -55,7 +52,7 @@ public class ServiceFamilyService {
             return serviceFamilyMapper.getList(0,currentUser.getId(),status, keyword);
         }
         //否则，当前用户为管理员
-        return serviceFamilyMapper.getList(0,0,status, keyword);*/
+        return serviceFamilyMapper.getList(0,0,status, keyword);
     }
 
     /**

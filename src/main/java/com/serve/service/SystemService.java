@@ -6,11 +6,13 @@ import com.serve.mapper.UserMapper;
 import com.serve.pojo.common.Const;
 import com.serve.pojo.common.Result;
 import com.serve.pojo.model.UserModel;
+import com.serve.pojo.req.RegisterReq;
 import com.serve.pojo.resp.LoginResp;
 import com.serve.util.ContextUtil;
 import com.serve.util.JwtUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,9 +38,9 @@ public class SystemService {
         }
 
         //设置session
-        ContextUtil.setUserView(userModel);
 
         String token = JwtUtil.generateToken(account);
+        ContextUtil.setUserView(userModel,token);
 
         LoginResp resp = new LoginResp();
         resp.setName(userModel.getName());
@@ -46,23 +48,19 @@ public class SystemService {
         return new Result(resp);
     }
 
-    public Result<LoginResp> register(String account) {
-        boolean existFlag = accountExist(account);
+    public Result<LoginResp> register(RegisterReq req) {
+        boolean existFlag = accountExist(req.getAccount());
         if (existFlag){
             return new Result(Result.FAILURE_CODE,"账号已存在！");
         }
 
         UserModel userModel = new UserModel();
-        userModel.setAccount(account);
-        userModel.setType(Const.LOGIN_WECHAT);
-        userModel.setRole(Const.ROLE_RESIDENT);
+        BeanUtils.copyProperties(req, userModel);
         userMapper.insert(userModel);
 
-        //设置session
-        ContextUtil.setUserView(userModel);
-
-        String token = JwtUtil.generateToken(account);
-
+        //设置session并返回
+        String token = JwtUtil.generateToken(req.getAccount());
+        ContextUtil.setUserView(userModel,token);
         LoginResp resp = new LoginResp();
         resp.setName(userModel.getName());
         resp.setToken(token);

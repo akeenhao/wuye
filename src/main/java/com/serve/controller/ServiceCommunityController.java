@@ -2,6 +2,7 @@ package com.serve.controller;
 
 import com.serve.pojo.common.Result;
 import com.serve.pojo.req.ServiceCommunityApplyReq;
+import com.serve.pojo.resp.ServiceCommunityResp;
 import com.serve.service.ServiceCommunityService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/serviceCommunity")
@@ -29,13 +31,15 @@ public class ServiceCommunityController {
 
     @GetMapping("/getList")
     @ApiOperation("查询社区服务")
-    public Result getList(){
-        return null;
+    public Result<List<ServiceCommunityResp>> getList(@ApiParam(value = "status 状态") String status,
+                                                      @ApiParam(value = "keyword 模糊查询") String keyword) {
+        return new Result<>(serviceCommunityService.getList(status, keyword));
     }
 
     @PostMapping("/reply")
     @ApiOperation("社区服务答复")
-    public Result reply(){
-        return null;
+    public Result reply(@ApiParam(value = "applyId 申请的id") int applyId,
+                        @ApiParam(value = "答复内容") String comment) {
+        return serviceCommunityService.reply(applyId,comment);
     }
 }

@@ -32,7 +32,7 @@ public class SystemController {
     @PostMapping("/register")
     @ApiOperation("注册")
     public Result<LoginResp> register(@ApiParam("注册信息") @RequestBody RegisterReq req){
-        return systemService.register(req.getAccount());
+        return systemService.register(req);
     }
 
     @GetMapping("/accountExist")

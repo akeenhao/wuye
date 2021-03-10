@@ -6,12 +6,12 @@ import lombok.Data;
 
 @Data
 @ApiModel("业主资料")
-public class ResidentReq {
+public class UserInfoReq {
     @ApiModelProperty(value = "姓名",allowEmptyValue = false)
     private String name;
     @ApiModelProperty(value = "身份证",allowEmptyValue = false)
     private String idCard;
-    @ApiModelProperty(value = "性别", allowableValues = "male,female",allowEmptyValue = false)
+    @ApiModelProperty(value = "性别", allowableValues = "男,女",allowEmptyValue = false)
     private String sex;
     @ApiModelProperty(value = "楼号",allowEmptyValue = false)
     private String building;
