@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.serve.mapper.ServiceFamilyMapper" >
+    <select id="getList" resultType="com.serve.pojo.resp.ServiceFamilyQueryResp">
+        select id ,
+        (select t.name from service_type t where t.id = f.service_type) `type`,
+        f.title ,
+        f.context ,
+        f.picture picture_url,
+        (case f.status when 'APPLY' then '已申请' when 'RECEIVE' then '已受理' when 'REPAIR' then '已维修' else '' end) status,
+        (select u.name from `system_user` u where u.id = f.apply_man) apply_man,
+        f.apply_time ,
+        (select u.name from `system_user` u where u.id = f.accept_man) accept_man,
+        f.accept_time ,
+        (select u.name from `system_user` u where u.id = f.repair_man) repair_man,
+        f.repair_time ,
+        (select u.name from `system_user` u where u.id = f.comment) comment_man,
+        f.comment_time
+        from service_family f
+        <where>
+            <if test="applyManId > 0">
+                and f.apply_man = #{applyManId}
+            </if>
+            <if test="repariManId > 0">
+                and f.repair_man = #{repariManId}
+            </if>
+            <if test="status != null and status != ''">
+                and f.status = #{status}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                and (f.title like concat('%',#{keyword},'%') or f.context like concat('%',#{keyword},'%'))
+            </if>
+        </where>
+        order by f.apply_time desc
+    </select>
+</mapper>
