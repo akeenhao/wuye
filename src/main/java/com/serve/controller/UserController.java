@@ -36,7 +36,7 @@ public class UserController {
     @ApiOperation("登录")
     public Result<LoginResp> login(@ApiParam("登录信息") @RequestBody LoginReq req) {
         logger.info("调用登录");
-        return systemService.login(req.getType(), req.getAccount(), req.getPassword());
+        return systemService.login(req.getAccount(), req.getPassword());
     }
 
     @PostMapping("/register")

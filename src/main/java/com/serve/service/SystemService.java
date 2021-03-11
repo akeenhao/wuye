@@ -20,27 +20,27 @@ import org.springframework.stereotype.Service;
 public class SystemService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
-    private  UserMapper userMapper;
+    private UserMapper userMapper;
 
-    public Result<LoginResp> login(String type, String account, String password){
+    public Result<LoginResp> login(String account, String password) {
         logger.info("调用登录service");
         QueryWrapper<UserModel> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().eq(UserModel::getAccount,account);
+        queryWrapper.lambda().eq(UserModel::getAccount, account);
         UserModel userModel = userMapper.selectOne(queryWrapper);
 
-        if (userModel == null){
-            return new Result(Result.FAILURE_CODE,"账号不存在！");
+        if (userModel == null) {
+            return new Result(Result.FAILURE_CODE, "账号不存在！");
         }
-        if (Const.LOGIN_PC.equals(type)) {
-            if (!password.equals(userModel.getPassword())){
-                return new Result(Result.FAILURE_CODE,"密码错误！");
-            }
-        }
+//        if (Const.LOGIN_PC.equals(type)) {
+//            if (!password.equals(userModel.getPassword())){
+//                return new Result(Result.FAILURE_CODE,"密码错误！");
+//            }
+//        }
 
         //设置session
 
         String token = JwtUtil.generateToken(account);
-        ContextUtil.setUserView(userModel,token);
+        ContextUtil.setUserView(userModel, token);
 
         LoginResp resp = new LoginResp();
         resp.setAccount(userModel.getAccount());
@@ -58,8 +58,8 @@ public class SystemService {
 
     public Result<LoginResp> register(RegisterReq req) {
         boolean existFlag = accountExist(req.getAccount());
-        if (existFlag){
-            return new Result(Result.FAILURE_CODE,"账号已存在！");
+        if (existFlag) {
+            return new Result(Result.FAILURE_CODE, "账号已存在！");
         }
 
         UserModel userModel = new UserModel();
@@ -68,7 +68,7 @@ public class SystemService {
 
         //设置session并返回
         String token = JwtUtil.generateToken(req.getAccount());
-        ContextUtil.setUserView(userModel,token);
+        ContextUtil.setUserView(userModel, token);
         LoginResp resp = new LoginResp();
         resp.setAccount(userModel.getAccount());
         resp.setName(userModel.getName());
@@ -80,12 +80,13 @@ public class SystemService {
 
     /**
      * 判断账号是否存在
+     *
      * @param account
      * @return Y：存在 N：不存在
      */
-    public boolean accountExist(String account){
+    public boolean accountExist(String account) {
         QueryWrapper<UserModel> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().eq(UserModel::getAccount,account);
+        queryWrapper.lambda().eq(UserModel::getAccount, account);
         UserModel user = userMapper.selectOne(queryWrapper);
         if (user != null) {
             return true;
