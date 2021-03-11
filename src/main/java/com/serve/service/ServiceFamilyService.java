@@ -91,4 +91,17 @@ public class ServiceFamilyService {
         return new Result();
     }
 
+    //fix
+    public Result fix(int applyId) {
+        ServiceFamilyModel serviceFamily = serviceFamilyMapper.selectById(applyId);
+        if (serviceFamily == null) {
+            return new Result(Result.FAILURE_CODE, "此申请不存在，刷新后再试！");
+        }
+        serviceFamily.setStatus(Const.SERVICE_FAMILY_REPAIR);
+        serviceFamily.setCommentTime(Util.getCurrentTime());
+        serviceFamilyMapper.updateById(serviceFamily);
+
+        return new Result();
+    }
+
 }

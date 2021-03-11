@@ -1,10 +1,7 @@
 package com.serve.controller;
 
 import com.serve.pojo.common.Result;
-import com.serve.pojo.req.ServiceFamilyCommentReq;
-import com.serve.pojo.req.ServiceFamilyCreateReq;
-import com.serve.pojo.req.ServiceFamilyQueryReq;
-import com.serve.pojo.req.ServiceFamilySetRepairManReq;
+import com.serve.pojo.req.*;
 import com.serve.pojo.resp.ServiceFamilyQueryResp;
 import com.serve.service.ServiceFamilyService;
 import com.serve.util.FileUtil;
@@ -68,6 +65,13 @@ public class ServiceFamilyController {
         logger.info("设置维修人员参数:req:{}", req);
         serviceFamilyService.setRepairMan(req.getApplyId(), req.getUserId());
         return new Result();
+    }
+
+    @PostMapping("/fix")
+    @ApiOperation(value = "维修")
+    public Result fix(@RequestBody ServiceFamilyFixReq req) {
+        logger.info("业主维修参数:applyId:{}", req.getApplyId());
+        return serviceFamilyService.fix(req.getApplyId());
     }
 
     @PostMapping("/commentService")
