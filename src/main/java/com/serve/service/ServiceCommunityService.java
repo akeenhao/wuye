@@ -5,7 +5,7 @@ import com.serve.pojo.common.Const;
 import com.serve.pojo.common.Result;
 import com.serve.pojo.model.ServiceCommunityModel;
 import com.serve.pojo.model.UserModel;
-import com.serve.pojo.req.ServiceCommunityApplyReq;
+import com.serve.pojo.req.ServiceCommunityCreateReq;
 import com.serve.pojo.resp.ServiceCommunityResp;
 import com.serve.util.ContextUtil;
 import com.serve.util.FileUtil;
@@ -29,12 +29,12 @@ public class ServiceCommunityService {
      * @return
      * @throws IOException
      */
-    public Result apply(ServiceCommunityApplyReq req) throws IOException {
+    public Result apply(ServiceCommunityCreateReq req) throws IOException {
         ServiceCommunityModel model = new ServiceCommunityModel();
         BeanUtils.copyProperties(req, model);
 
-        String filePath = FileUtil.upload(req.getFile());
-        model.setPicture(filePath);
+//        String filePath = FileUtil.upload(req.getFile());
+//        model.setPicture(filePath);
         model.setStatus(Const.SERVICE_COMMUNITY_APPLY);
         model.setApplyMan(ContextUtil.getUserView().getId());
         model.setApplyTime(Util.getCurrentTime());

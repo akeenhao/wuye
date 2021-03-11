@@ -1,7 +1,5 @@
 package com.serve.service;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.serve.mapper.ServiceFamilyMapper;
 import com.serve.pojo.common.Const;
 import com.serve.pojo.common.Result;
@@ -23,12 +21,10 @@ public class ServiceFamilyService {
     @Autowired
     ServiceFamilyMapper serviceFamilyMapper;
 
-    public int apply(int serviceType, String title, String context, String pictureUrl){
+    public int apply(String title, String context) {
         ServiceFamilyModel serviceFamily = new ServiceFamilyModel();
-        serviceFamily.setServiceType(serviceType);
         serviceFamily.setTitle(title);
         serviceFamily.setContext(context);
-        serviceFamily.setPicture(pictureUrl);
         serviceFamily.setStatus(Const.SERVICE_FAMILY_APPLY);
         serviceFamily.setApplyMan(ContextUtil.getUserView().getId());
         serviceFamily.setApplyTime(Util.getCurrentTime());
@@ -37,37 +33,39 @@ public class ServiceFamilyService {
 
     /**
      * 查询家庭服务列表
+     *
      * @param status
      * @param keyword
      * @return
      */
-    public List<ServiceFamilyQueryResp> getList(String status, String keyword){
+    public List<ServiceFamilyQueryResp> getList(String status, String keyword) {
         UserModel currentUser = ContextUtil.getUserView();
         //当前用户为业主
-        if (Const.ROLE_RESIDENT.equals(currentUser.getRole())){
-            return serviceFamilyMapper.getList(currentUser.getId(),0,status, keyword);
+        if (Const.ROLE_RESIDENT.equals(currentUser.getRole())) {
+            return serviceFamilyMapper.getList(currentUser.getId(), 0, status, keyword);
         }
         //当前用户为维修人员
-        if (Const.ROLE_REPAIRMAN.equals(currentUser.getRole())){
-            return serviceFamilyMapper.getList(0,currentUser.getId(),status, keyword);
+        if (Const.ROLE_REPAIRMAN.equals(currentUser.getRole())) {
+            return serviceFamilyMapper.getList(0, currentUser.getId(), status, keyword);
         }
         //否则，当前用户为管理员
-        return serviceFamilyMapper.getList(0,0,status, keyword);
+        return serviceFamilyMapper.getList(0, 0, status, keyword);
     }
 
     /**
      * 设置维修人员
+     *
      * @param applyId
      * @param userId
      * @return
      */
-    public Result setRepairMan(int applyId, int userId){
+    public Result setRepairMan(int applyId, int userId) {
         ServiceFamilyModel serviceFamily = serviceFamilyMapper.selectById(applyId);
-        if (serviceFamily == null){
-            return new Result(Result.FAILURE_CODE,"此申请不存在，刷新后再试！");
+        if (serviceFamily == null) {
+            return new Result(Result.FAILURE_CODE, "此申请不存在，刷新后再试！");
         }
-        if (Const.SERVICE_FAMILY_REPAIR.equals(serviceFamily.getStatus())){
-            return new Result(Result.FAILURE_CODE,"此申请的状态为“已维修”，不需要再设置维修人员！");
+        if (Const.SERVICE_FAMILY_REPAIR.equals(serviceFamily.getStatus())) {
+            return new Result(Result.FAILURE_CODE, "此申请的状态为“已维修”，不需要再设置维修人员！");
         }
         serviceFamily.setStatus(Const.SERVICE_FAMILY_RECEIVE);
         serviceFamily.setAcceptMan(ContextUtil.getUserView().getId());
@@ -78,13 +76,13 @@ public class ServiceFamilyService {
     }
 
     //评论
-    public Result commentService(int applyId, String comment){
+    public Result commentService(int applyId, String comment) {
         ServiceFamilyModel serviceFamily = serviceFamilyMapper.selectById(applyId);
-        if (serviceFamily == null){
-            return new Result(Result.FAILURE_CODE,"此申请不存在，刷新后再试！");
+        if (serviceFamily == null) {
+            return new Result(Result.FAILURE_CODE, "此申请不存在，刷新后再试！");
         }
-        if (!Const.SERVICE_FAMILY_REPAIR.equals(serviceFamily.getStatus())){
-            return new Result(Result.FAILURE_CODE,"维修后才能发表评论！");
+        if (!Const.SERVICE_FAMILY_REPAIR.equals(serviceFamily.getStatus())) {
+            return new Result(Result.FAILURE_CODE, "维修后才能发表评论！");
         }
         serviceFamily.setComment(comment);
         serviceFamily.setCommentTime(Util.getCurrentTime());

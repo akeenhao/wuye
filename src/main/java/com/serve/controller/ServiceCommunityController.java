@@ -1,7 +1,8 @@
 package com.serve.controller;
 
 import com.serve.pojo.common.Result;
-import com.serve.pojo.req.ServiceCommunityApplyReq;
+import com.serve.pojo.req.ServiceCommunityCreateReq;
+import com.serve.pojo.req.ServiceCommunityReplyReq;
 import com.serve.pojo.resp.ServiceCommunityResp;
 import com.serve.service.ServiceCommunityService;
 import io.swagger.annotations.Api;
@@ -25,21 +26,20 @@ public class ServiceCommunityController {
 
     @PostMapping("/apply")
     @ApiOperation("申请社区服务")
-    public Result apply(@ApiParam("申请内容") ServiceCommunityApplyReq req) throws IOException {
+    public Result apply(@ApiParam("申请内容") ServiceCommunityCreateReq req) throws IOException {
         return serviceCommunityService.apply(req);
     }
 
     @GetMapping("/getList")
     @ApiOperation("查询社区服务")
-    public Result<List<ServiceCommunityResp>> getList(@ApiParam(value = "status 状态") String status,
+    public Result<List<ServiceCommunityResp>> getList(@ApiParam(value = "status 状态 已申请（APPLY） 已回复（REPLY）") String status,
                                                       @ApiParam(value = "keyword 模糊查询") String keyword) {
         return new Result<>(serviceCommunityService.getList(status, keyword));
     }
 
     @PostMapping("/reply")
     @ApiOperation("社区服务答复")
-    public Result reply(@ApiParam(value = "applyId 申请的id") int applyId,
-                        @ApiParam(value = "答复内容") String comment) {
-        return serviceCommunityService.reply(applyId,comment);
+    public Result reply(@ApiParam("答复数据") ServiceCommunityReplyReq req) {
+        return serviceCommunityService.reply(req.getApplyId(), req.getComment());
     }
 }

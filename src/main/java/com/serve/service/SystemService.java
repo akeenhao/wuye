@@ -20,9 +20,9 @@ import org.springframework.stereotype.Service;
 public class SystemService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
-    UserMapper userMapper;
+    private  UserMapper userMapper;
 
-    public Result login(String type, String account, String password){
+    public Result<LoginResp> login(String type, String account, String password){
         logger.info("调用登录service");
         QueryWrapper<UserModel> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda().eq(UserModel::getAccount,account);
@@ -43,9 +43,17 @@ public class SystemService {
         ContextUtil.setUserView(userModel,token);
 
         LoginResp resp = new LoginResp();
+        resp.setAccount(userModel.getAccount());
         resp.setName(userModel.getName());
         resp.setToken(token);
+        resp.setRole(userModel.getRole());
         return new Result(resp);
+    }
+
+    public Result logout() {
+        logger.info("logout");
+        ContextUtil.logout();
+        return new Result();
     }
 
     public Result<LoginResp> register(RegisterReq req) {
@@ -62,8 +70,10 @@ public class SystemService {
         String token = JwtUtil.generateToken(req.getAccount());
         ContextUtil.setUserView(userModel,token);
         LoginResp resp = new LoginResp();
+        resp.setAccount(userModel.getAccount());
         resp.setName(userModel.getName());
         resp.setToken(token);
+        resp.setRole(userModel.getRole());
         return new Result(resp);
     }
 

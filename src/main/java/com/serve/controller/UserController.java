@@ -34,7 +34,7 @@ public class UserController {
 
     @PostMapping("/login")
     @ApiOperation("登录")
-    public Result<JSONObject> login(@ApiParam("登录信息") @RequestBody LoginReq req) {
+    public Result<LoginResp> login(@ApiParam("登录信息") @RequestBody LoginReq req) {
         logger.info("调用登录");
         return systemService.login(req.getType(), req.getAccount(), req.getPassword());
     }
@@ -43,6 +43,12 @@ public class UserController {
     @ApiOperation("注册")
     public Result<LoginResp> register(@ApiParam("注册信息") @RequestBody RegisterReq req) {
         return systemService.register(req);
+    }
+
+    @PostMapping("/logout")
+    @ApiOperation("退出")
+    public Result logout() {
+        return systemService.logout();
     }
 
     @GetMapping("/getUserByRole")

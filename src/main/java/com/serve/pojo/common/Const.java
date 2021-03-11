@@ -15,7 +15,7 @@ public class Const {
 
     //社区服务状态
     public static final String SERVICE_COMMUNITY_APPLY= "APPLY"; //已申请
-    public static final String SERVICE_COMMUNITY_REPLY= "EPLY"; //已回复
+    public static final String SERVICE_COMMUNITY_REPLY= "REPLY"; //已回复
 
 
     //角色

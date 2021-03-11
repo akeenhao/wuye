@@ -35,5 +35,13 @@ public class ContextUtil {
 
     }
 
+    public static void logout() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        String token = request.getHeader("Authorization");
+        Map<String, UserModel> userMap = (Map<String, UserModel>)request.getSession().getAttribute("user");
+        userMap.remove(token);
+        request.getSession().setAttribute("user", userMap);
+    }
+
 
 }

@@ -1,6 +1,8 @@
 package com.serve.controller;
 
 import com.serve.pojo.common.Result;
+import com.serve.pojo.req.ServiceFamilyCommentReq;
+import com.serve.pojo.req.ServiceFamilyCreateReq;
 import com.serve.pojo.req.ServiceFamilyQueryReq;
 import com.serve.pojo.req.ServiceFamilySetRepairManReq;
 import com.serve.pojo.resp.ServiceFamilyQueryResp;
@@ -30,53 +32,49 @@ public class ServiceFamilyController {
 
     /**
      * 申请家庭服务
-     * @param serviceType
-     * @param title
-     * @param context
-     * @param file
+     *
+     * @param req
      * @return
-     * @throws IOException
      */
     @PostMapping("/apply")
     @ApiOperation(value = "申请家庭服务")
-    public Result apply(@ApiParam(value = "服务类型") @RequestParam("serviceType") int serviceType,
-                        @ApiParam(value = "标题") @RequestParam("title") String title,
-                        @ApiParam(value = "内容") @RequestParam("context") String context,
-                        @ApiParam(value = "图片") @RequestParam("file") MultipartFile file) throws IOException {
-        String filePath = FileUtil.upload(file);
-        serviceFamilyService.apply(serviceType,title,context,filePath);
+    public Result apply(@RequestBody ServiceFamilyCreateReq req) {
+//        String filePath = FileUtil.upload(file);
+        serviceFamilyService.apply(req.getTitle(), req.getContext());
         return new Result();
     }
 
     /**
      * 查询家庭服务
-     * @param req
+     *
      * @return
      */
     @GetMapping("/getList")
     @ApiOperation(value = "查询家庭服务")
-    public Result<List<ServiceFamilyQueryResp>> getList(ServiceFamilyQueryReq req){
-        return new Result<>(serviceFamilyService.getList(req.getStatus(),req.getKeyword()));
+    public Result<List<ServiceFamilyQueryResp>> getList(@ApiParam(value = "status 状态 已申请（APPLY） 已受理（RECEIVE） 已维修（REPAIR）") String status,
+                                                        @ApiParam(value = "keyword 模糊查询") String keyword) {
+        return new Result<>(serviceFamilyService.getList(status, keyword));
     }
 
     /**
      * 管理员处理，设置维修人员
+     *
      * @param req
      * @return
      */
     @PostMapping("/setRepairMan")
     @ApiOperation(value = "设置维修人员")
-    public Result setRepairMan(@RequestBody ServiceFamilySetRepairManReq req){
-        logger.info("设置维修人员参数:req:{}",req);
-        serviceFamilyService.setRepairMan(req.getApplyId(),req.getUserId());
+    public Result setRepairMan(@RequestBody ServiceFamilySetRepairManReq req) {
+        logger.info("设置维修人员参数:req:{}", req);
+        serviceFamilyService.setRepairMan(req.getApplyId(), req.getUserId());
         return new Result();
     }
 
     @PostMapping("/commentService")
     @ApiOperation(value = "业主评论")
-    public Result commentService(int applyId, String comment){
-        logger.info("业主评论参数:applyId:{},comment:{}",applyId,comment);
-        return serviceFamilyService.commentService(applyId, comment);
+    public Result commentService(@RequestBody ServiceFamilyCommentReq req) {
+        logger.info("业主评论参数:applyId:{},comment:{}", req.getApplyId(), req.getComment());
+        return serviceFamilyService.commentService(req.getApplyId(), req.getComment());
     }
 
 }
