@@ -43,10 +43,8 @@ public class SystemService {
         ContextUtil.setUserView(userModel, token);
 
         LoginResp resp = new LoginResp();
-        resp.setAccount(userModel.getAccount());
-        resp.setName(userModel.getName());
+        BeanUtils.copyProperties(userModel, resp);
         resp.setToken(token);
-        resp.setRole(userModel.getRole());
         return new Result(resp);
     }
 
@@ -70,10 +68,8 @@ public class SystemService {
         String token = JwtUtil.generateToken(req.getAccount());
         ContextUtil.setUserView(userModel, token);
         LoginResp resp = new LoginResp();
-        resp.setAccount(userModel.getAccount());
-        resp.setName(userModel.getName());
+        BeanUtils.copyProperties(req, resp);
         resp.setToken(token);
-        resp.setRole(userModel.getRole());
         return new Result(resp);
     }
 
