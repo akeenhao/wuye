@@ -9,10 +9,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -26,7 +23,7 @@ public class ServiceCommunityController {
 
     @PostMapping("/apply")
     @ApiOperation("申请社区服务")
-    public Result apply(@ApiParam("申请内容") ServiceCommunityCreateReq req) throws IOException {
+    public Result apply(@ApiParam("申请内容") @RequestBody ServiceCommunityCreateReq req) throws IOException {
         return serviceCommunityService.apply(req);
     }
 
@@ -39,7 +36,7 @@ public class ServiceCommunityController {
 
     @PostMapping("/reply")
     @ApiOperation("社区服务答复")
-    public Result reply(@ApiParam("答复数据") ServiceCommunityReplyReq req) {
+    public Result reply(@ApiParam("答复数据") @RequestBody ServiceCommunityReplyReq req) {
         return serviceCommunityService.reply(req.getApplyId(), req.getComment());
     }
 }
