@@ -14,7 +14,8 @@
         f.accept_time ,
         (select u.name from `system_user` u where u.id = f.repair_man) repair_man,
         f.repair_time ,
-        (select u.name from `system_user` u where u.id = f.comment) comment_man,
+--         (select u.name from `system_user` u where u.id = f.comment) comment_man,
+        f.comment,
         f.comment_time
         from service_family f
         <where>
