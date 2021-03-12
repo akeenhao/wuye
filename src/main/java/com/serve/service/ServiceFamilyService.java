@@ -98,7 +98,7 @@ public class ServiceFamilyService {
             return new Result(Result.FAILURE_CODE, "此申请不存在，刷新后再试！");
         }
         serviceFamily.setStatus(Const.SERVICE_FAMILY_REPAIR);
-        serviceFamily.setCommentTime(Util.getCurrentTime());
+        serviceFamily.setRepairTime(Util.getCurrentTime());
         serviceFamilyMapper.updateById(serviceFamily);
 
         return new Result();
