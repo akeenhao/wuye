@@ -20,7 +20,8 @@ import org.springframework.stereotype.Service;
 public class SystemService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
-    private UserMapper userMapper;
+    private UserMapper userMapper;    @Autowired
+    private ContextUtil contextUtil;
 
     public Result<LoginResp> login(String account, String password) {
         logger.info("调用登录service");
@@ -40,7 +41,7 @@ public class SystemService {
         //设置session
 
         String token = JwtUtil.generateToken(account);
-        ContextUtil.setUserView(userModel, token);
+        contextUtil.setUserView(userModel, token);
 
         LoginResp resp = new LoginResp();
         BeanUtils.copyProperties(userModel, resp);
@@ -50,7 +51,7 @@ public class SystemService {
 
     public Result logout() {
         logger.info("logout");
-        ContextUtil.logout();
+        contextUtil.logout();
         return new Result();
     }
 
@@ -66,7 +67,7 @@ public class SystemService {
 
         //设置session并返回
         String token = JwtUtil.generateToken(req.getAccount());
-        ContextUtil.setUserView(userModel, token);
+        contextUtil.setUserView(userModel, token);
         LoginResp resp = new LoginResp();
         BeanUtils.copyProperties(req, resp);
         resp.setToken(token);

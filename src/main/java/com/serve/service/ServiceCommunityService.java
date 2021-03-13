@@ -21,6 +21,8 @@ import java.util.List;
 public class ServiceCommunityService {
     @Autowired
     ServiceCommunityMapper serviceCommunityMapper;
+    @Autowired
+    ContextUtil contextUtil;
 
     /**
      * 申请
@@ -29,21 +31,21 @@ public class ServiceCommunityService {
      * @return
      * @throws IOException
      */
-    public Result apply(ServiceCommunityCreateReq req) throws IOException {
+    public Result apply(ServiceCommunityCreateReq req) throws Exception {
         ServiceCommunityModel model = new ServiceCommunityModel();
         BeanUtils.copyProperties(req, model);
 
 //        String filePath = FileUtil.upload(req.getFile());
 //        model.setPicture(filePath);
         model.setStatus(Const.SERVICE_COMMUNITY_APPLY);
-        model.setApplyMan(ContextUtil.getUserView().getId());
+        model.setApplyMan(contextUtil.getUserView().getId());
         model.setApplyTime(Util.getCurrentTime());
         serviceCommunityMapper.insert(model);
         return Result.ok();
     }
 
-    public List<ServiceCommunityResp> getList(String status, String keyword) {
-        UserModel currentUser = ContextUtil.getUserView();
+    public List<ServiceCommunityResp> getList(String status, String keyword) throws Exception {
+        UserModel currentUser = contextUtil.getUserView();
         //当前用户为业主
         if (Const.ROLE_RESIDENT.equals(currentUser.getRole())) {
             return serviceCommunityMapper.getList(currentUser.getId(), status, keyword);
@@ -53,15 +55,16 @@ public class ServiceCommunityService {
     }
 
 
-    public Result reply(int applyId, String comment) {
+    public Result reply(int applyId, String comment) throws Exception {
         ServiceCommunityModel serviceCommunityModel = serviceCommunityMapper.selectById(applyId);
         if (serviceCommunityModel == null) {
             return new Result(Result.FAILURE_CODE, "此申请不存在，刷新后再试！");
         }
-        UserModel currentUser = ContextUtil.getUserView();
+        UserModel currentUser = contextUtil.getUserView();
         serviceCommunityModel.setReplyMan(currentUser.getId());
         serviceCommunityModel.setReplyContext(comment);
         serviceCommunityModel.setReplyTime(Util.getCurrentTime());
+        serviceCommunityModel.setStatus(Const.SERVICE_COMMUNITY_REPLY);
         serviceCommunityMapper.updateById(serviceCommunityModel);
         return new Result();
     }

@@ -20,13 +20,15 @@ public class ServiceFamilyService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     ServiceFamilyMapper serviceFamilyMapper;
+    @Autowired
+    ContextUtil contextUtil;
 
-    public int apply(String title, String context) {
+    public int apply(String title, String context) throws Exception {
         ServiceFamilyModel serviceFamily = new ServiceFamilyModel();
         serviceFamily.setTitle(title);
         serviceFamily.setContext(context);
         serviceFamily.setStatus(Const.SERVICE_FAMILY_APPLY);
-        serviceFamily.setApplyMan(ContextUtil.getUserView().getId());
+        serviceFamily.setApplyMan(contextUtil.getUserView().getId());
         serviceFamily.setApplyTime(Util.getCurrentTime());
         return serviceFamilyMapper.insert(serviceFamily);
     }
@@ -38,8 +40,8 @@ public class ServiceFamilyService {
      * @param keyword
      * @return
      */
-    public List<ServiceFamilyQueryResp> getList(String status, String keyword) {
-        UserModel currentUser = ContextUtil.getUserView();
+    public List<ServiceFamilyQueryResp> getList(String status, String keyword) throws Exception {
+        UserModel currentUser = contextUtil.getUserView();
         //当前用户为业主
         if (Const.ROLE_RESIDENT.equals(currentUser.getRole())) {
             return serviceFamilyMapper.getList(currentUser.getId(), 0, status, keyword);
@@ -59,7 +61,7 @@ public class ServiceFamilyService {
      * @param userId
      * @return
      */
-    public Result setRepairMan(int applyId, int userId) {
+    public Result setRepairMan(int applyId, int userId) throws Exception {
         ServiceFamilyModel serviceFamily = serviceFamilyMapper.selectById(applyId);
         if (serviceFamily == null) {
             return new Result(Result.FAILURE_CODE, "此申请不存在，刷新后再试！");
@@ -68,7 +70,7 @@ public class ServiceFamilyService {
             return new Result(Result.FAILURE_CODE, "此申请的状态为“已维修”，不需要再设置维修人员！");
         }
         serviceFamily.setStatus(Const.SERVICE_FAMILY_RECEIVE);
-        serviceFamily.setAcceptMan(ContextUtil.getUserView().getId());
+        serviceFamily.setAcceptMan(contextUtil.getUserView().getId());
         serviceFamily.setAcceptTime(Util.getCurrentTime());
         serviceFamily.setRepairMan(userId);
         serviceFamilyMapper.updateById(serviceFamily);

@@ -35,7 +35,7 @@ public class ServiceFamilyController {
      */
     @PostMapping("/apply")
     @ApiOperation(value = "申请家庭服务")
-    public Result apply(@RequestBody ServiceFamilyCreateReq req) {
+    public Result apply(@RequestBody ServiceFamilyCreateReq req) throws Exception {
 //        String filePath = FileUtil.upload(file);
         serviceFamilyService.apply(req.getTitle(), req.getContext());
         return new Result();
@@ -49,7 +49,7 @@ public class ServiceFamilyController {
     @GetMapping("/getList")
     @ApiOperation(value = "查询家庭服务")
     public Result<List<ServiceFamilyQueryResp>> getList(@ApiParam(value = "status 状态 已申请（APPLY） 已受理（RECEIVE） 已维修（REPAIR）") String status,
-                                                        @ApiParam(value = "keyword 模糊查询") String keyword) {
+                                                        @ApiParam(value = "keyword 模糊查询") String keyword) throws Exception {
         return new Result<>(serviceFamilyService.getList(status, keyword));
     }
 
@@ -61,7 +61,7 @@ public class ServiceFamilyController {
      */
     @PostMapping("/setRepairMan")
     @ApiOperation(value = "设置维修人员")
-    public Result setRepairMan(@RequestBody ServiceFamilySetRepairManReq req) {
+    public Result setRepairMan(@RequestBody ServiceFamilySetRepairManReq req) throws Exception {
         logger.info("设置维修人员参数:req:{}", req);
         serviceFamilyService.setRepairMan(req.getApplyId(), req.getUserId());
         return new Result();

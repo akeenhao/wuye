@@ -59,13 +59,13 @@ public class UserController {
 
     @PostMapping("/updateResidentInfo")
     @ApiOperation("更新用户信息")
-    public Result updateUser(@ApiParam(value = "更新业主资料") @RequestBody UserInfoReq req) {
+    public Result updateUser(@ApiParam(value = "更新业主资料") @RequestBody UserInfoReq req) throws Exception {
         return userService.updateResidentInfo(req);
     }
 
     @GetMapping("/getCurrentUserInfo")
     @ApiOperation("查询当前用户信息")
-    public Result<ResidentResp> getCurrentUserInfo() {
+    public Result<ResidentResp> getCurrentUserInfo() throws Exception {
         return new Result<>(userService.getCurrentUserInfo());
     }
 

@@ -19,6 +19,8 @@ import java.util.List;
 public class UserService {
     @Autowired
     UserMapper userMapper;
+    @Autowired
+    ContextUtil contextUtil;
 
     /**
      * 根据角色查询用户
@@ -43,8 +45,8 @@ public class UserService {
      * @param userInfoReq
      * @return
      */
-    public Result updateResidentInfo(UserInfoReq userInfoReq){
-        int userId = ContextUtil.getUserView().getId();
+    public Result updateResidentInfo(UserInfoReq userInfoReq) throws Exception {
+        int userId = contextUtil.getUserView().getId();
         UserModel userModel = userMapper.selectById(userId);
         if (userModel == null){
             return new Result(Result.FAILURE_CODE,"当前用户不存在！");
@@ -58,8 +60,8 @@ public class UserService {
      * 查询当前业主资料
      * @return
      */
-    public ResidentResp getCurrentUserInfo(){
-        int userId = ContextUtil.getUserView().getId();
+    public ResidentResp getCurrentUserInfo() throws Exception {
+        int userId = contextUtil.getUserView().getId();
         UserModel userModel = userMapper.selectById(userId);
         ResidentResp resp = new ResidentResp();
         BeanUtils.copyProperties(userModel, resp);
