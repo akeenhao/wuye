@@ -39,4 +39,11 @@ public class ServiceCommunityController {
     public Result reply(@ApiParam("答复数据") @RequestBody ServiceCommunityReplyReq req) throws Exception {
         return serviceCommunityService.reply(req.getApplyId(), req.getComment());
     }
+
+    @PostMapping("/delete")
+    @ApiOperation("删除")
+    public Result delete(@ApiParam("数据") @RequestBody ServiceCommunityReplyReq req) {
+        serviceCommunityService.delete(req.getApplyId());
+        return  new Result();
+    }
 }

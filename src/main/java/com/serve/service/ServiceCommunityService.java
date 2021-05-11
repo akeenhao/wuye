@@ -68,4 +68,8 @@ public class ServiceCommunityService {
         serviceCommunityMapper.updateById(serviceCommunityModel);
         return new Result();
     }
+
+    public void delete(int applyId) {
+        serviceCommunityMapper.deleteById(applyId);
+    }
 }

@@ -106,4 +106,8 @@ public class ServiceFamilyService {
         return new Result();
     }
 
+    public void delete(int applyId) {
+        serviceFamilyMapper.deleteById(applyId);
+    }
+
 }

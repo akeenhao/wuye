@@ -74,6 +74,14 @@ public class ServiceFamilyController {
         return serviceFamilyService.fix(req.getApplyId());
     }
 
+    @PostMapping("/delete")
+    @ApiOperation(value = "删除")
+    public Result delete(@RequestBody ServiceFamilyFixReq req) {
+        logger.info("业主维修参数:applyId:{}", req.getApplyId());
+        serviceFamilyService.delete(req.getApplyId());
+        return new Result();
+    }
+
     @PostMapping("/commentService")
     @ApiOperation(value = "业主评论")
     public Result commentService(@RequestBody ServiceFamilyCommentReq req) {
